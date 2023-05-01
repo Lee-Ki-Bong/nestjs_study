@@ -49,7 +49,7 @@ export class ProductService {
   }
 
   async checkSoldout({ productId }) {
-    const prdRow = await this.productRepository.findOne({
+    let prdRow = await this.productRepository.findOne({
       where: { id: productId },
     });
 
@@ -61,5 +61,26 @@ export class ProductService {
     if (prdRow.isSoldout) {
       throw new UnprocessableEntityException('판매완료된 상품');
     }
+  }
+
+  // ## 삭제
+  async delete({ productId }) {
+    // [delete 방법1] hard delete
+    // const res = await this.productRepository.delete({ id: productId });
+    // return res.affected ? true : false; // affected 는 쿼리 실행후 변화감지여부. 즉, 성공여부.
+    // save 는 객체반환, update는 변화감지 등.. 반환. 차리가 있다.
+
+    // [delete 방법3] (id, 바꿀정보) - isDeleted
+    // this.productRepository.update({ id: productId }, { isDeleted: true });
+
+    // [delete 방법3] (id, 바꿀정보) 개선 - deleteAt
+    // this.productRepository.update({ id: productId }, { deleteAt: new Date() });
+
+    // [delete 방법4]  (id, 바꿀정보) 개선 - typeorm deleteAt @DeleteDateColumn
+    // this.productRepository.softRemove({ id: productId }); // id 로만 삭제 가능.
+
+    // [delete 방법4]  (id, 바꿀정보) 개선 - typeorm deleteAt @DeleteDateColumn
+    const res = await this.productRepository.softDelete({ id: productId }); // 다른 조건으로 삭제 가능.
+    return res.affected ? true : false; // affected 는 쿼리 실행후 변화감지여부. 즉, 성공여부.
   }
 }

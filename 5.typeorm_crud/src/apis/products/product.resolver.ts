@@ -38,4 +38,10 @@ export class ProductResolver {
 
     return this.productService.update(productId, updateProductInput);
   }
+
+  // ## 삭제
+  @Mutation(() => Boolean)
+  deleteProduct(@Args('productId') productId: string) {
+    return this.productService.delete({ productId });
+  }
 }

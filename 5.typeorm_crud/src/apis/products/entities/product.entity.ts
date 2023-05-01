@@ -5,6 +5,7 @@ import { ProductTags } from 'src/apis/productTags/entities/productTags.entity';
 import { User } from 'src/apis/user/entities/user.entity';
 import {
   Column,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -39,6 +40,21 @@ export class Product {
   @Column({ default: false })
   @Field(() => Boolean)
   isSoldout: boolean;
+
+  // [delete 방법2]
+  // @Column({ default: false })
+  // @Field(() => Boolean)
+  // isDeleted: boolean;
+
+  // [delete 방법3]
+  // @Column({ default: null })
+  // @Field(() => Date)
+  // deleteAt: Date;
+
+  // [delete 방법4] 방법3을 typeorm 에서 제공해줌.
+  // 이러면 조회할때 자동으로 이 컬럼값 유무로 where 을 추가해 준다. wow
+  @DeleteDateColumn()
+  deleteAt: Date;
 
   // 상품 거래위치와 1:1 fk
   @JoinColumn()
